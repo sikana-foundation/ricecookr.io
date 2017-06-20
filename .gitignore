@@ -1,0 +1,6 @@
+parameters.yml
+.ricecookerfilecache
+__pycache__
+restore
+storage
+sikana_api.pyc
