@@ -26,7 +26,7 @@ from pprint import pprint
 ### Global variables
 
 # Reading API credentials from parameters.yml
-with open('parameters.yml', 'r') as f:
+with open("parameters.yml", "r") as f:
     parameters = yaml.load(f)
 
 # Sikana's API access
@@ -41,10 +41,10 @@ def construct_channel(**kwargs):
     """
 
     # Channel language
-    if 'language_code' in kwargs:
+    if "language_code" in kwargs:
         language_code = kwargs["language_code"]
     else:
-        language_code = 'en'
+        language_code = "en"
 
     channel = ChannelNode(
         source_domain = "sikana.tv",
@@ -76,47 +76,60 @@ def _build_tree(node, language_code):
     categories = sikana_api.get_categories(language_code)
 
     # Adding categories to tree
-    for cat in categories['categories']:
+    for cat in categories["categories"]:
+        print("# CATEGORY: {}".format(cat["name"]))
         category_node = nodes.TopicNode( # category node
-            source_id=cat['name'],
-            title=cat['localizedName']
+            source_id = cat["name"],
+            title = cat["localizedName"]
         )
         node.add_child(category_node)
 
         # Getting programs belonging to this category from Sikana API
-        programs = sikana_api.get_programs(language_code, cat['name'])
+        programs = sikana_api.get_programs(language_code, cat["name"])
 
         for prog in programs:
+            print("## PROGRAM: {}".format(programs[prog]["name"]))
             program_node = nodes.TopicNode( # program node
-                source_id=programs[prog]["nameCanonical"],
-                title=programs[prog]["name"],
-                description=programs[prog].get("description"),
-                thumbnail=programs[prog].get("image"),
+                source_id = programs[prog]["nameCanonical"],
+                title = programs[prog]["name"],
+                description = programs[prog].get("description"),
+                thumbnail = programs[prog].get("image"),
             )
             category_node.add_child(program_node)
 
             # Getting program details from Sikana API
-            program = sikana_api.get_program(language_code, programs[prog]['nameCanonical'])
+            program = sikana_api.get_program(language_code, programs[prog]["nameCanonical"])
 
-            for chap in program['listChaptersVideos']:
+            for chap in program["listChaptersVideos"]:
+                print("### CHAPTER: {}. {}".format(program["listChaptersVideos"][chap]["infos"]["id"], program["listChaptersVideos"][chap]["infos"]["name"]))
                 chapter_node = nodes.TopicNode( # chapter node
-                    source_id=str(program['listChaptersVideos'][chap]['infos']['id']),
-                    title=program['listChaptersVideos'][chap]['infos']['name'],
+                    source_id = str(program["listChaptersVideos"][chap]["infos"]["id"]),
+                    title = program["listChaptersVideos"][chap]["infos"]["name"],
                 )
                 program_node.add_child(chapter_node)
-                chapter_tree = program['listChaptersVideos'][chap].get("children", [])
 
                 # For each video in this chapter
-                # for v in chap['videos']:
-                #     # Getting video details from Sikana API
-                #     video = sikana_api.get_video(language_code, v['nameCanonical'])
-                #     child_node = nodes.VideoNode(
-                #         source_id=v['video']["id"],
-                #         title=v['video']["title"],
-                #         description=v['video']['description'],
-                #         derive_thumbnail=False, # video-specific data
-                #         thumbnail=v['video'].get('thumbnail'),
-                #     )
-                    # todo: if youtube addfile youtube else addfile from iguane
+                for v in program["listChaptersVideos"][chap]["videos"]:
+                    # Getting video details from Sikana API
+                    video = sikana_api.get_video(language_code, v['nameCanonical'])
+
+                    print("#### VIDEO: {}".format(video["video"]["title"]))
+
+                    # If no description, we use an empty string
+                    try:
+                        description = video["video"]["description"]
+                    except KeyError:
+                        description = ""
+
+                    video_node = nodes.VideoNode(
+                        source_id = v["nameCanonical"],
+                        title = video["video"]["title"],
+                        description = description,
+                        derive_thumbnail = False, # video-specific data
+                        license = get_license(licenses.CC_BY, copyright_holder="Sikana Education"),
+                        thumbnail = "https://img.youtube.com/vi/{}/maxresdefault.jpg".format(video["video"]["youtube_id"]),
+                    )
+                    chapter_node.add_child(video_node)
+                    video_node.add_file(files.YouTubeVideoFile(youtube_id=video["video"]["youtube_id"]))
 
     return node
