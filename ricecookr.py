@@ -9,18 +9,13 @@ Sikana's content is organized as follow:
 import sys
 import yaml
 from enum import Enum
+from ricecooker.classes import nodes, questions, files
 from ricecooker.classes.nodes import ChannelNode
 from ricecooker.classes.licenses import get_license
+from ricecooker.exceptions import UnknownContentKindError, UnknownFileTypeError, UnknownQuestionTypeError, raise_for_invalid_channel
+
 from le_utils.constants import licenses
 from sikana_api import *
-
-from ricecooker.classes import nodes, questions, files
-from ricecooker.classes.licenses import get_license
-from ricecooker.exceptions import UnknownContentKindError, UnknownFileTypeError, UnknownQuestionTypeError, raise_for_invalid_channel
-from le_utils.constants import content_kinds,file_formats, format_presets, licenses, exercises, languages
-from pressurecooker.encodings import get_base64_encoding
-
-from pprint import pprint
 
 
 ### Global variables
@@ -48,8 +43,8 @@ def construct_channel(**kwargs):
 
     channel = ChannelNode(
         source_domain = "sikana.tv",
-        source_id = "sikana-channel-"+language_code,
-        title = "Sikana " + language_code,
+        source_id = "sikana-channel-" + language_code,
+        title = "Sikana " + language_code.upper(),
         description = "Sikana is an NGO aiming at producing educative videos to share practical knowledge and skills.",
         thumbnail = "./sikana_logo.png"
     )
@@ -77,7 +72,7 @@ def _build_tree(node, language_code):
 
     # Adding categories to tree
     for cat in categories["categories"]:
-        print("# CATEGORY: {}".format(cat["name"]))
+        print("#### CATEGORY: {}".format(cat["name"]))
         category_node = nodes.TopicNode( # category node
             source_id = cat["name"],
             title = cat["localizedName"]
@@ -88,7 +83,7 @@ def _build_tree(node, language_code):
         programs = sikana_api.get_programs(language_code, cat["name"])
 
         for prog in programs:
-            print("## PROGRAM: {}".format(programs[prog]["name"]))
+            print("### PROGRAM: {}".format(programs[prog]["name"]))
             program_node = nodes.TopicNode( # program node
                 source_id = programs[prog]["nameCanonical"],
                 title = programs[prog]["name"],
@@ -101,7 +96,7 @@ def _build_tree(node, language_code):
             program = sikana_api.get_program(language_code, programs[prog]["nameCanonical"])
 
             for chap in program["listChaptersVideos"]:
-                print("### CHAPTER: {}. {}".format(program["listChaptersVideos"][chap]["infos"]["id"], program["listChaptersVideos"][chap]["infos"]["name"]))
+                print("## CHAPTER: {}. {}".format(program["listChaptersVideos"][chap]["infos"]["id"], program["listChaptersVideos"][chap]["infos"]["name"]))
                 chapter_node = nodes.TopicNode( # chapter node
                     source_id = str(program["listChaptersVideos"][chap]["infos"]["id"]),
                     title = program["listChaptersVideos"][chap]["infos"]["name"],
@@ -113,7 +108,7 @@ def _build_tree(node, language_code):
                     # Getting video details from Sikana API
                     video = sikana_api.get_video(language_code, v['nameCanonical'])
 
-                    print("#### VIDEO: {}".format(video["video"]["title"]))
+                    print("# VIDEO: {}".format(video["video"]["title"]))
 
                     # If no description, we use an empty string
                     try:
