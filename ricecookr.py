@@ -104,27 +104,28 @@ def _build_tree(node, language_code):
                 program_node.add_child(chapter_node)
 
                 # For each video in this chapter
-                for v in program["listChaptersVideos"][chap]["videos"]:
-                    # Getting video details from Sikana API
-                    video = sikana_api.get_video(language_code, v['nameCanonical'])
+                if "videos" in program["listChaptersVideos"][chap]:
+                    for v in program["listChaptersVideos"][chap]["videos"]:
+                        # Getting video details from Sikana API
+                        video = sikana_api.get_video(language_code, v['nameCanonical'])
 
-                    print("# VIDEO: {}".format(video["video"]["title"]))
+                        print("# VIDEO: {}".format(video["video"]["title"]))
 
-                    # If no description, we use an empty string
-                    try:
-                        description = video["video"]["description"]
-                    except KeyError:
-                        description = ""
+                        # If no description, we use an empty string
+                        try:
+                            description = video["video"]["description"]
+                        except KeyError:
+                            description = ""
 
-                    video_node = nodes.VideoNode(
-                        source_id = v["nameCanonical"],
-                        title = video["video"]["title"],
-                        description = description,
-                        derive_thumbnail = False, # video-specific data
-                        license = get_license(licenses.CC_BY, copyright_holder="Sikana Education"),
-                        thumbnail = "https://img.youtube.com/vi/{}/maxresdefault.jpg".format(video["video"]["youtube_id"]),
-                    )
-                    chapter_node.add_child(video_node)
-                    video_node.add_file(files.YouTubeVideoFile(youtube_id=video["video"]["youtube_id"]))
+                        video_node = nodes.VideoNode(
+                            source_id = v["nameCanonical"],
+                            title = video["video"]["title"],
+                            description = description,
+                            derive_thumbnail = False, # video-specific data
+                            license = get_license(licenses.CC_BY, copyright_holder="Sikana Education"),
+                            thumbnail = "https://img.youtube.com/vi/{}/maxresdefault.jpg".format(video["video"]["youtube_id"]),
+                        )
+                        chapter_node.add_child(video_node)
+                        video_node.add_file(files.YouTubeVideoFile(youtube_id=video["video"]["youtube_id"]))
 
     return node
