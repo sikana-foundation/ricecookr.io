@@ -39,4 +39,4 @@ First, copy-paste `parameters.yml.dist` to `parameters.yml` and fill it with you
 
 Then, run the following command to build a channel for the language of your choice:
 
-`python3 -m ricecooker uploadchannel "ricecookr.py" --token=<YOUR_TOKEN_HERE> language_code=<YOUR_LANGUAGE_CODE_HERE>`
+`python3 -m ricecooker uploadchannel "ricecookr.py" --publish --token=<YOUR_TOKEN_HERE> language_code=<YOUR_LANGUAGE_CODE_HERE>`
