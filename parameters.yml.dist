@@ -1,3 +1,5 @@
 api:
     client_id: [client_id_here]
     secret: [secret_here]
+kolibri:
+    token: [token_here]

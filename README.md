@@ -35,7 +35,7 @@ Language
 This script intends to create a Sikana channel per language ("Sikana EN", "Sikana FR", ...)
 
 ### How to use it
-First, copy-paste `parameters.yml.dist` to `parameters.yml` and fill it with your credentials to Sikana's API.
+First, copy-paste `parameters.yml.dist` to `parameters.yml` and fill it with your credentials to Sikana's API and Kolibri token.
 
 Then, run the following command to build a channel for the language of your choice:
 
