@@ -3,40 +3,32 @@ Integration of Sikana's content into Learning Equality's [Kolibri Studio](https:
 
 Using [Ricecooker](https://github.com/learningequality/ricecooker) framework.
 
-### Kolibri's data structure
-```
-Node
-`-- TreeNode
-    |-- TopicNode
-    `-- ContentNode
-        |-- VideoNode
-        |-- DocumentNode
-        `-- ...
-
-File
-|-- DownloadFile
-|   |-- VideoFile
-|   `-- SubtitleFile
-|-- WebVideoFile
-|   `-- YouTubeVideoFile
-|-- YouTubeSubtitleFile
-`-- ...
-```
-
 ### Sikana's data structure
+For each language, you'll find the content organized as follow:
+
 ```
-Language
-`--Category
-    `-- Program
-        `-- Chapter
-            `-- Video
+Category
+`-- Program
+    `-- Chapter
+        `-- Video
 ```
 
 This script intends to create a Sikana channel per language ("Sikana EN", "Sikana FR", ...)
 
-### How to use it
-First, copy-paste `parameters.yml.dist` to `parameters.yml` and fill it with your credentials to Sikana's API and Kolibri token.
+### Installation instructions
+For this, you will need to have `python3` and [`virtualenv`](https://virtualenv.pypa.io/en/stable/) installed on your machine (please read the manual to understand basically how it works).
 
-Then, run the following command to build a channel for the language of your choice:
+In the directory containing the code, run following commands:
+
+- `virtualenv -p python3 venv`
+- `source venv/bin/activate`
+- `pip3 install -r requirements.txt`
+- Then, copy-paste `parameters.yml.dist` to `parameters.yml` and fill it with your credentials to Sikana's API and Kolibri token.
+
+### How to use it
+Each time you want to use the script, you have to ensure the `virtualenv` you previously created is activated (it appears in your prompt).
+If not, run the command `source venv/bin/activate`.
+
+Run the following command to build a channel for the language of your choice:
 
 `python3 -m ricecooker uploadchannel "ricecookr.py" --publish --token=<YOUR_TOKEN_HERE> language_code=<YOUR_LANGUAGE_CODE_HERE>`
