@@ -1,0 +1,2 @@
+ricecooker==0.6.0
+PyYAML==3.12
