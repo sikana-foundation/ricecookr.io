@@ -40,7 +40,7 @@ class SikanaApi:
         url = self.base_url + "api/languages?access_token=" + self.token
         response = requests.get(url)
         if response.status_code != 200:
-            raise Exception("GET /oauth/v2/token returned code " + format(response.status_code) + ": " + format(response.text))
+            raise Exception("GET /api/languages returned code " + format(response.status_code) + ": " + format(response.text))
         return response.json()
 
     def get_categories(self, language_code):
@@ -50,7 +50,7 @@ class SikanaApi:
         url = self.base_url + "api/categories/languages/" + language_code + "?access_token=" + self.token + "&version=2"
         response = requests.get(url)
         if response.status_code != 200:
-            raise Exception("GET /oauth/v2/token returned code " + format(response.status_code) + ": " + format(response.text))
+            raise Exception("GET /api/categories/languages/" + language_code + " returned code " + format(response.status_code) + ": " + format(response.text))
         return response.json()
 
     def get_programs(self, language_code, category_name):
@@ -60,7 +60,7 @@ class SikanaApi:
         url = self.base_url + "api/programs/categories/" + category_name + "/languages/" + language_code + "?access_token=" + self.token + "&version=2"
         response = requests.get(url)
         if response.status_code != 200:
-            raise Exception("GET /oauth/v2/token returned code " + format(response.status_code) + ": " + format(response.text))
+            raise Exception("GET /api/programs/categories/" + category_name + "/languages/" + language_code + " returned code " + format(response.status_code) + ": " + format(response.text))
         return response.json()
 
     def get_program(self, language_code, name_canonical):
@@ -70,7 +70,7 @@ class SikanaApi:
         url = self.base_url + "api/programs/" + name_canonical + "/languages/" + language_code + "?access_token=" + self.token + "&version=2"
         response = requests.get(url)
         if response.status_code != 200:
-            raise Exception("GET /oauth/v2/token returned code " + format(response.status_code) + ": " + format(response.text))
+            raise Exception("GET /api/programs/" + name_canonical + "/languages/" + language_code + " returned code " + format(response.status_code) + ": " + format(response.text))
         return response.json()
 
     def get_video(self, language_code, name_canonical):
@@ -80,5 +80,5 @@ class SikanaApi:
         url = self.base_url + "api/videos/" + name_canonical + "/languages/" + language_code + "?access_token=" + self.token + "&version=2"
         response = requests.get(url)
         if response.status_code != 200:
-            raise Exception("GET /oauth/v2/token returned code " + format(response.status_code) + ": " + format(response.text))
+            raise Exception("GET /api/videos/" + name_canonical + "/languages/" + language_code + " returned code " + format(response.status_code) + ": " + format(response.text))
         return response.json()
