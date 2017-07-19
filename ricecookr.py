@@ -122,7 +122,7 @@ def _build_tree(node, language_code):
                             title = video["video"]["title"],
                             description = description,
                             derive_thumbnail = False, # video-specific data
-                            license = get_license(licenses.CC_BY, copyright_holder="Sikana Education"),
+                            license = get_license(licenses.CC_BY_NC_ND, copyright_holder="Sikana Education"),
                             thumbnail = "https://img.youtube.com/vi/{}/maxresdefault.jpg".format(video["video"]["youtube_id"]),
                         )
                         chapter_node.add_child(video_node)
