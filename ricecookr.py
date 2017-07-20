@@ -71,7 +71,7 @@ def _build_tree(node, language_code):
     categories = sikana_api.get_categories(language_code)
 
     # Adding categories to tree
-    for cat in categories["categories"]:
+    for key, cat in categories["categories"].items():
         print("#### CATEGORY: {}".format(cat["name"]))
         category_node = nodes.TopicNode( # category node
             source_id = cat["name"],
