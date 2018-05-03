@@ -1,7 +1,7 @@
 #!/usr/bin/python
 """
 Sikana's content is organized as follow:
-- There is top level set of categories (e.g. Health, Nature, Art, ...)
+- There is a top level set of categories (e.g. Health, Nature, Art, ...)
 - Each category has programs (e.g. "Learn how to save a life", "Epidemics", ...)
 - Each program has chapters
 - Finally, each chapter has contents like videos, images, or PDF files.
@@ -14,7 +14,7 @@ from ricecooker.classes.nodes import ChannelNode
 from ricecooker.classes.licenses import get_license
 from ricecooker.exceptions import UnknownContentKindError, UnknownFileTypeError, UnknownQuestionTypeError, raise_for_invalid_channel
 
-from le_utils.constants import licenses
+from le_utils.constants import licenses, languages
 from sikana_api import *
 
 
@@ -28,6 +28,7 @@ with open("parameters.yml", "r") as f:
 SIKANA_CLIENT_ID = parameters["api"]["client_id"]
 SIKANA_SECRET = parameters["api"]["secret"]
 
+BASE_URL = "https://www.sikana.tv"
 
 
 def construct_channel(**kwargs):
@@ -127,5 +128,15 @@ def _build_tree(node, language_code):
                         )
                         chapter_node.add_child(video_node)
                         video_node.add_file(files.YouTubeVideoFile(youtube_id=video["video"]["youtube_id"]))
+
+                        # For each subtitle of this video
+                        for sub in video["subtitles"]:
+                            code = video["subtitles"][sub]["code"] if video["subtitles"][sub]["code"] != "pt-br" else "pt"
+
+                            sub_file = files.SubtitleFile(
+                                path = BASE_URL + video["subtitles"][sub]["fileUrl"],
+                                language = languages.getlang(code).code,
+                            )
+                            video_node.add_file(sub_file)
 
     return node
